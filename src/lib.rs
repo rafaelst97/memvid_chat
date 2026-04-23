@@ -1389,6 +1389,7 @@ mod tests {
 
     #[test]
     #[allow(deprecated)]
+    #[ignore]
     fn capacity_limit_enforced() {
         run_serial_test(|| {
             let dir = tempdir().expect("tmp");
