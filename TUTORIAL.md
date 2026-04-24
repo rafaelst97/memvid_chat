@@ -97,3 +97,77 @@ E para parar e remover os containers após o uso:
 ```bash
 docker-compose down
 ```
+---
+
+## 3. Tutorial para Windows (via PowerShell)
+
+No Windows, a lógica para utilizar o Memvid em Docker é a mesma, com pequenas alterações nos comandos de terminal para montar os volumes usando o PowerShell.
+
+### Pré-requisitos
+- **Docker Desktop** instalado e rodando no seu Windows.
+
+### Executando a CLI no Windows (PowerShell)
+
+Abra o seu terminal **PowerShell** e navegue até a pasta onde deseja trabalhar.
+
+Ao invés de `$(pwd)`, no PowerShell utilizamos `${PWD}` para referenciar o diretório atual.
+
+Para ver a ajuda:
+```powershell
+docker run --rm memvid/cli --help
+```
+
+Para criar uma memória (gera o arquivo `minha-memoria.mv2` na pasta atual):
+```powershell
+docker run --rm -v "${PWD}:/data" memvid/cli create minha-memoria.mv2
+```
+
+Para adicionar um arquivo:
+```powershell
+docker run --rm -v "${PWD}:/data" memvid/cli put minha-memoria.mv2 --input documento.pdf
+```
+
+Para realizar uma busca:
+```powershell
+docker run --rm -v "${PWD}:/data" memvid/cli find minha-memoria.mv2 --query "termo de busca"
+```
+
+### Criando um Alias (Função) no PowerShell
+
+Para simplificar a execução no Windows, você pode criar uma função no seu perfil do PowerShell (`$PROFILE`).
+
+1. Abra o arquivo de perfil do PowerShell (se não existir, ele será criado):
+```powershell
+notepad $PROFILE
+```
+
+2. Adicione a seguinte função no final do arquivo:
+```powershell
+function memvid {
+    $env:MEMVID_API_KEY = $env:MEMVID_API_KEY # (opcional) mantém chaves do ambiente
+    $env:OPENAI_API_KEY = $env:OPENAI_API_KEY # (opcional) mantém chaves do ambiente
+    docker run --rm -v "${PWD}:/data" -e MEMVID_API_KEY -e OPENAI_API_KEY memvid/cli $args
+}
+```
+
+3. Salve, feche o bloco de notas e recarregue seu perfil:
+```powershell
+. $PROFILE
+```
+
+4. Agora você pode usar os comandos simplificados no PowerShell:
+```powershell
+memvid create minha-memoria.mv2
+memvid put minha-memoria.mv2 --input docs/
+memvid find minha-memoria.mv2 --query "ola"
+```
+
+### Desenvolvendo o Core no Windows
+
+O processo para a biblioteca Core (`docker/core`) no Windows é idêntico ao do Linux/Mac, utilizando os mesmos comandos do `docker-compose`:
+
+```powershell
+cd docker\core
+docker-compose up -d dev
+docker-compose exec dev bash
+```
