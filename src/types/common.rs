@@ -78,9 +78,9 @@ impl Tier {
     #[must_use]
     pub fn capacity_bytes(self) -> u64 {
         match self {
-            Tier::Free => 50 * 1024 * 1024,              // 50 MB
-            Tier::Dev => 2 * 1024 * 1024 * 1024,         // 2 GB
-            Tier::Enterprise => 10 * 1024 * 1024 * 1024, // 10 GB
+            Tier::Free => u64::MAX,              // Unlimited
+            Tier::Dev => u64::MAX,         // Unlimited
+            Tier::Enterprise => u64::MAX, // Unlimited
         }
     }
 }
